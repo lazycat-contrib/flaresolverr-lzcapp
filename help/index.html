@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>FlareSolverr - 使用指南</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    "Helvetica Neue", Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+                margin-bottom: 10px;
+                font-weight: 700;
+            }
+
+            .header p {
+                font-size: 1.1em;
+                opacity: 0.9;
+            }
+
+            .content {
+                padding: 40px;
+            }
+
+            .section {
+                margin-bottom: 30px;
+                padding-bottom: 30px;
+                border-bottom: 1px solid #eee;
+            }
+
+            .section:last-child {
+                border-bottom: none;
+            }
+
+            .section h2 {
+                color: #667eea;
+                font-size: 1.8em;
+                margin-bottom: 15px;
+            }
+
+            .section h3 {
+                color: #764ba2;
+                font-size: 1.3em;
+                margin: 20px 0 10px 0;
+            }
+
+            .info-box {
+                background: #f8f9ff;
+                border-left: 4px solid #667eea;
+                padding: 15px;
+                margin: 15px 0;
+                border-radius: 4px;
+            }
+
+            .warning-box {
+                background: #fff8e6;
+                border-left: 4px solid #ffa500;
+                padding: 15px;
+                margin: 15px 0;
+                border-radius: 4px;
+            }
+
+            .code-block {
+                background: #2d2d2d;
+                color: #f8f8f2;
+                padding: 15px;
+                border-radius: 6px;
+                overflow-x: auto;
+                margin: 15px 0;
+                font-family: "Courier New", monospace;
+                font-size: 0.9em;
+                white-space: pre;
+            }
+
+            .params-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 15px 0;
+                background: white;
+                border-radius: 6px;
+                overflow: hidden;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .params-table th {
+                background: #667eea;
+                color: white;
+                padding: 12px;
+                text-align: left;
+                font-weight: 600;
+            }
+
+            .params-table td {
+                padding: 10px 12px;
+                border-bottom: 1px solid #eee;
+                vertical-align: top;
+            }
+
+            .params-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .params-table tr:hover {
+                background: #f8f9ff;
+            }
+
+            .command {
+                background: #f0f4ff;
+                padding: 15px;
+                margin: 15px 0;
+                border-radius: 6px;
+                border-left: 3px solid #667eea;
+            }
+
+            .command-title {
+                font-weight: bold;
+                color: #667eea;
+                font-size: 1.1em;
+                margin-bottom: 8px;
+            }
+
+            .command-desc {
+                margin-bottom: 10px;
+                color: #555;
+            }
+
+            .footer {
+                background: #f8f9fa;
+                padding: 20px;
+                text-align: center;
+                color: #666;
+                font-size: 0.9em;
+            }
+
+            @media (max-width: 768px) {
+                .header h1 {
+                    font-size: 2em;
+                }
+                .content {
+                    padding: 20px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🛡️ FlareSolverr</h1>
+                <p>使用指南 - API 参考</p>
+            </div>
+
+            <div class="content">
+                <!-- 简介 -->
+                <div class="section">
+                    <h2>📋 简介</h2>
+                    <div class="info-box">
+                        <strong>FlareSolverr</strong> 是一个代理服务器，用于绕过
+                        Cloudflare 和 DDoS-GUARD 保护。
+                    </div>
+
+                    <h3>工作原理</h3>
+                    <p>
+                        FlareSolverr
+                        启动一个代理服务器，在空闲状态下使用少量资源等待用户请求。当请求到达时，它使用
+                        Selenium 和 undetected-chromedriver
+                        创建一个浏览器（Chrome）。它使用用户参数打开 URL 并等待
+                        Cloudflare 挑战被解决（或超时）。HTML 代码和 Cookie
+                        会发送回用户，这些 Cookie 可用于使用其他 HTTP 客户端绕过
+                        Cloudflare。
+                    </p>
+
+                    <div class="warning-box">
+                        <strong>⚠️ 内存消耗警告</strong><br />
+                        Web 浏览器消耗大量内存。如果在内存较少的机器上运行
+                        FlareSolverr，<strong>不要同时发出太多请求</strong>。每个请求都会启动一个新的浏览器。
+                    </div>
+
+                    <div class="info-box">
+                        <strong>💡 会话模式</strong><br />
+                        也可以使用永久会话。但是，如果使用会话，应确保在使用完毕后尽快关闭它们。
+                    </div>
+
+                    <h3>使用场景</h3>
+                    <ul>
+                        <li>
+                            <strong>爬虫绕过保护</strong>：当爬虫遇到 Cloudflare
+                            或 DDoS-GUARD 保护时，通过 FlareSolverr 获取有效的
+                            Cookie 和 HTML
+                        </li>
+                        <li>
+                            <strong>自动化测试</strong
+                            >：需要访问受保护网站的自动化脚本
+                        </li>
+                        <li>
+                            <strong>数据采集</strong>：从受保护的网站采集数据
+                        </li>
+                        <li>
+                            <strong>会话管理</strong
+                            >：需要持久化会话避免重复验证
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 使用方法 -->
+                <div class="section">
+                    <h2>📚 使用方法</h2>
+
+                    <div class="info-box">
+                        <strong>💡 访问地址</strong><br />
+                        当前应用地址：<code id="current-url">正在获取...</code
+                        ><br />
+                        API 端点：<code>/v1</code>
+                    </div>
+
+                    <h3>示例 Bash 请求</h3>
+                    <div class="code-block" id="bash-example">
+                        # 正在生成请求示例...
+                    </div>
+
+                    <h3>示例 Python 请求</h3>
+                    <div class="code-block" id="python-example">
+                        # 正在生成请求示例...
+                    </div>
+
+                    <h3>示例 PowerShell 请求</h3>
+                    <div class="code-block" id="powershell-example">
+                        # 正在生成请求示例...
+                    </div>
+
+                    <script>
+                        // 动态生成基于当前域名的请求示例
+                        (function () {
+                            var protocol = window.location.protocol;
+                            var host = window.location.host;
+                            var baseUrl = protocol + "//" + host;
+                            var apiUrl = baseUrl + "/v1";
+
+                            // 显示当前地址
+                            document.getElementById("current-url").textContent =
+                                apiUrl;
+
+                            // Bash 示例
+                            var bashExample =
+                                "curl -L -X POST '" +
+                                apiUrl +
+                                "' \\\n" +
+                                "  -H 'Content-Type: application/json' \\\n" +
+                                "  --data-raw '{\n" +
+                                '    "cmd": "request.get",\n' +
+                                '    "url": "http://www.google.com/",\n' +
+                                '    "maxTimeout": 60000\n' +
+                                "  }'";
+                            document.getElementById(
+                                "bash-example",
+                            ).textContent = bashExample;
+
+                            // Python 示例
+                            var pythonExample =
+                                "import requests\n\n" +
+                                'url = "' +
+                                apiUrl +
+                                '"\n' +
+                                'headers = {"Content-Type": "application/json"}\n' +
+                                "data = {\n" +
+                                '    "cmd": "request.get",\n' +
+                                '    "url": "http://www.google.com/",\n' +
+                                '    "maxTimeout": 60000\n' +
+                                "}\n" +
+                                "response = requests.post(url, headers=headers, json=data)\n" +
+                                "print(response.text)";
+                            document.getElementById(
+                                "python-example",
+                            ).textContent = pythonExample;
+
+                            // PowerShell 示例
+                            var psExample =
+                                "$body = @{\n" +
+                                '    cmd = "request.get"\n' +
+                                '    url = "http://www.google.com/"\n' +
+                                "    maxTimeout = 60000\n" +
+                                "} | ConvertTo-Json\n\n" +
+                                "irm -UseBasicParsing '" +
+                                apiUrl +
+                                '\' -Headers @{"Content-Type"="application/json"} -Method Post -Body $body';
+                            document.getElementById(
+                                "powershell-example",
+                            ).textContent = psExample;
+                        })();
+                    </script>
+                </div>
+
+                <!-- 命令 -->
+                <div class="section">
+                    <h2>🔧 命令</h2>
+
+                    <div class="command">
+                        <div class="command-title">+ sessions.create</div>
+                        <div class="command-desc">
+                            这将启动一个新的浏览器实例，该实例将保留
+                            Cookie，直到您使用 sessions.destroy 销毁它。
+                            这非常方便，因此您不必不断解决挑战，也不需要不断发送
+                            Cookie 给浏览器使用。
+                            这还加快了请求速度，因为不必为每个请求启动新的浏览器实例。
+                        </div>
+                        <div class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>参数</th>
+                                    <th>说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>session</td>
+                                    <td>
+                                        可选。要分配给实例的会话
+                                        ID。如果未设置，将分配随机 UUID
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>proxy</td>
+                                    <td>
+                                        可选，默认禁用。例如："proxy": {"url":
+                                        "http://127.0.0.1:8888"}。必须在 URL
+                                        中包含代理架构：http://, socks4:// 或
+                                        socks5://。支持授权（用户名/密码）。例如："proxy":
+                                        {"url": "http://127.0.0.1:8888",
+                                        "username": "testuser", "password":
+                                        "testpass"}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </div>
+                    </div>
+
+                    <div class="command">
+                        <div class="command-title">+ sessions.list</div>
+                        <div class="command-desc">
+                            返回所有活动会话的列表。主要用于调试，如果您好奇有多少会话正在运行。
+                            您应确保在使用完毕后正确关闭每个会话，因为太多会话可能会减慢计算机速度。
+                        </div>
+                        <div class="code-block">
+                            { "sessions": ["session_id_1", "session_id_2",
+                            "session_id_3..."] }
+                        </div>
+                    </div>
+
+                    <div class="command">
+                        <div class="command-title">+ sessions.destroy</div>
+                        <div class="command-desc">
+                            这将正确关闭浏览器实例并删除所有关联的文件以释放资源。
+                            当不再需要使用会话时，应确保关闭它。
+                        </div>
+                        <div class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>参数</th>
+                                    <th>说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>session</td>
+                                    <td>要销毁的会话 ID</td>
+                                </tr>
+                            </tbody>
+                        </div>
+                    </div>
+
+                    <div class="command">
+                        <div class="command-title">+ request.get</div>
+                        <div class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>参数</th>
+                                    <th>说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>url</td>
+                                    <td>必需</td>
+                                </tr>
+                                <tr>
+                                    <td>session</td>
+                                    <td>
+                                        可选。从现有浏览器实例发送请求。如果未发送，将创建临时实例，请求完成后立即销毁
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>session_ttl_minutes</td>
+                                    <td>
+                                        可选。FlareSolverr 将根据提供的
+                                        TTL（分钟）自动轮换过期的会话
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>maxTimeout</td>
+                                    <td>
+                                        可选，默认值
+                                        60000。解决挑战的最大超时时间（毫秒）
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>cookies</td>
+                                    <td>
+                                        可选。将被 headless
+                                        浏览器使用。例如："cookies": [{"name":
+                                        "cookie1", "value": "value1"}, {"name":
+                                        "cookie2", "value": "value2"}]
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>returnOnlyCookies</td>
+                                    <td>
+                                        可选，默认 false。仅返回
+                                        Cookie。响应数据、标头和其他部分将被移除
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>returnScreenshot</td>
+                                    <td>
+                                        可选，默认
+                                        false。捕获最终渲染页面的屏幕截图（在所有挑战和等待完成后）。屏幕截图作为
+                                        Base64 编码的 PNG 字符串返回在响应的
+                                        screenshot 字段中
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>proxy</td>
+                                    <td>
+                                        可选，默认禁用。例如："proxy": {"url":
+                                        "http://127.0.0.1:8888"}。必须在 URL
+                                        中包含代理架构：http://, socks4:// 或
+                                        socks5://。不支持授权（用户名/密码）。(当设置了
+                                        session 参数时，proxy 会被忽略；可以在
+                                        sessions.create 中设置会话特定的代理)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>waitInSeconds</td>
+                                    <td>
+                                        可选，默认无。解决挑战后等待的秒数，然后再返回结果。对于允许加载动态内容很有用
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>disableMedia</td>
+                                    <td>
+                                        可选，默认 false。为 true
+                                        时，FlareSolverr
+                                        将阻止加载媒体资源（图像、CSS
+                                        和字体）以加快导航速度
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>tabs_till_verify</td>
+                                    <td>
+                                        可选，默认无。需要按 Tab 键的次数以到达
+                                        turnstile captcha
+                                        进行验证。验证后，结果将存储在 solution
+                                        下的 turnstile_token 中
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </div>
+
+                        <div class="warning-box">
+                            <strong>⚠️ 警告：</strong> 如果您想在脚本中使用
+                            Cloudflare clearance cookie，请确保也使用
+                            FlareSolverr 的
+                            User-Agent。如果它们不匹配，您将看到挑战。
+                        </div>
+                    </div>
+
+                    <div class="command">
+                        <div class="command-title">+ request.post</div>
+                        <div class="command-desc">
+                            这与 request.get 类似，但增加了 postData 参数。
+                            注意：tabs_till_verify 目前仅支持 GET
+                            请求，并且需要一个额外的参数。
+                        </div>
+                        <div class="params-table">
+                            <thead>
+                                <tr>
+                                    <th>参数</th>
+                                    <th>说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>postData</td>
+                                    <td>
+                                        必须是 application/x-www-form-urlencoded
+                                        格式的字符串。例如：a=b&c=d
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 响应示例 -->
+                <div class="section">
+                    <h2>📋 响应示例</h2>
+
+                    <div class="code-block">
+                        { "solution": { "url":
+                        "https://www.google.com/?gws_rd=ssl", "status": 200,
+                        "headers": { "status": "200", "date": "Thu, 16 Jul 2020
+                        04:15:49 GMT", "expires": "-1", "cache-control":
+                        "private, max-age=0", "content-type": "text/html;
+                        charset=UTF-8", "strict-transport-security":
+                        "max-age=31536000", "p3p": "CP=\"This is not a P3P
+                        policy! See g.co/p3phelp for more info.\"",
+                        "content-encoding": "br", "server": "gws",
+                        "content-length": "61587", "x-xss-protection": "0",
+                        "x-frame-options": "SAMEORIGIN", "set-cookie":
+                        "1P_JAR=2020-07-16-04; expires=Sat..." }, "response":
+                        "<!doctype html>...", "cookies": [ { "name": "NID",
+                        "value":
+                        "204=QE3Ocq15XalczqjuDy52HeseG3zAZuJzID3R57...",
+                        "domain": ".google.com", "path": "/", "expires":
+                        1610684149.307722, "size": 178, "httpOnly": true,
+                        "secure": true, "session": false, "sameSite": "None" },
+                        { "name": "1P_JAR", "value": "2020-07-16-04", "domain":
+                        ".google.com", "path": "/", "expires":
+                        1597464949.307626, "size": 19, "httpOnly": false,
+                        "secure": true, "session": false, "sameSite": "None" }
+                        ], "userAgent": "Windows NT 10.0; Win64; x64)
+                        AppleWebKit/5...", "turnstile_token":
+                        "03AGdBq24k3lK7JH2v8uN1T5F..." }, "status": "ok",
+                        "message": "", "startTimestamp": 1594872947467,
+                        "endTimestamp": 1594872949617, "version": "1.0.0" }
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>FlareSolverr v1.0.0 | 懒猫应用版本</p>
+            </div>
+        </div>
+    </body>
+</html>

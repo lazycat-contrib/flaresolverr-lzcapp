@@ -1,0 +1,94 @@
+# FlareSolverr 部署参数配置
+# 所有参数均为可选，使用默认值即可正常运行
+
+params:
+  - id: log_level
+    type: string
+    name: "log level"
+    description: "Log level (debug, info, warning, error)"
+    default_value: "info"
+    optional: true
+    placeholder: "info"
+    regex: "^(debug|info|warning|error)$"
+    regex_message: "Must be one of: debug, info, warning, error"
+
+  - id: log_file
+    type: string
+    name: "log file"
+    description: "Log file path (use 'none' for console logging)"
+    default_value: "none"
+    optional: true
+    placeholder: "none"
+
+  - id: log_html
+    type: bool
+    name: "log html"
+    description: "Log HTML content for debugging"
+    default_value: false
+    optional: true
+
+  - id: captcha_solver
+    type: string
+    name: "captcha solver"
+    description: "Captcha solver service (none, 2captcha, anticaptcha, etc.)"
+    default_value: "none"
+    optional: true
+    placeholder: "none"
+
+  - id: tz
+    type: string
+    name: "timezone"
+    description: "Timezone for the container"
+    default_value: "Asia/Shanghai"
+    placeholder: "Asia/Shanghai"
+
+  - id: proxy_username
+    type: string
+    name: "proxy username"
+    description: "Username for proxy authentication (optional)"
+    default_value: ""
+    optional: true
+    placeholder: "username"
+
+  - id: proxy_password
+    type: string
+    name: "proxy password"
+    description: "Password for proxy authentication (optional)"
+    default_value: ""
+    optional: true
+    placeholder: "password"
+
+  - id: lang
+    type: string
+    name: "language"
+    description: "Browser language code (e.g., en_GB, ja_JP, zh_CN, zh_TW). Default: none (system default)"
+    default_value: "none"
+    optional: true
+    placeholder: "zh_CN"
+
+locales:
+  zh:
+    log_level:
+      name: "日志级别"
+      description: "日志级别 (debug, info, warning, error)"
+    log_file:
+      name: "日志文件"
+      description: "日志文件路径 (使用 'none' 在控制台输出)"
+    log_html:
+      name: "记录 HTML"
+      description: "是否记录 HTML 内容用于调试"
+    captcha_solver:
+      name: "验证码求解器"
+      description: "验证码求解服务 (none, 2captcha, anticaptcha 等)"
+    tz:
+      name: "时区"
+      description: "容器时区设置"
+    proxy_username:
+      name: "代理用户名"
+      description: "代理认证用户名（可选）"
+    proxy_password:
+      name: "代理密码"
+      description: "代理认证密码（可选）"
+    lang:
+      name: "语言代码"
+      description: "浏览器语言代码（如 zh_CN, en_GB, ja_JP 等），默认为系统语言"

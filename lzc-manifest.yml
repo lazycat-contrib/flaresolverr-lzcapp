@@ -1,0 +1,52 @@
+name: FlareSolverr
+package: cloud.lazycat.app.flaresolverr
+version: 1.0.0
+min_os_version: 1.3.8
+description: "FlareSolverr - A proxy server to bypass Cloudflare and DDoS-GUARD protection"
+usage: "详细使用说明和 API 参考请访问：应用域名/help"
+license: MIT
+homepage: https://github.com/FlareSolverr/FlareSolverr
+author: FlareSolverr Team
+
+application:
+  subdomain: flaresolverr
+  public_path:
+    - /
+  routes:
+    - /=http://flaresolverr:8191/
+    - /help=file:///lzcapp/pkg/content/
+
+services:
+  flaresolverr:
+    # ghcr.io/flaresolverr/flaresolverr:latest
+    image: registry.lazycat.cloud/czyt/flaresolverr/flaresolverr:af8ddb2f6699cae8
+    environment:
+      - LOG_LEVEL={{.U.log_level}}
+      - LOG_FILE={{.U.log_file}}
+      - LOG_HTML={{.U.log_html}}
+      - CAPTCHA_SOLVER={{.U.captcha_solver}}
+      - TZ={{.U.tz}}
+      - PROXY_USERNAME={{.U.proxy_username}}
+      - PROXY_PASSWORD={{.U.proxy_password}}
+      - LANG={{.U.lang}}
+    binds:
+      - /lzcapp/var/flaresolver:/config
+    cpu_shares: 512
+    mem_limit: 512M
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -f http://localhost:8191/health || exit 1
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+locales:
+  en:
+    name: "FlareSolverr"
+    description: "FlareSolverr - A proxy server to bypass Cloudflare and DDoS-GUARD protection"
+  zh:
+    name: "FlareSolverr"
+    description: "FlareSolverr - 用于绕过 Cloudflare 和 DDoS-GUARD 保护的代理服务器"
