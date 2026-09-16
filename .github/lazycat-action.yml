@@ -1,0 +1,40 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: .lazycat-build/flaresolverr.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: flaresolverr
+
+build:
+  run_buildscript: false
+
+images:
+  # 主应用：上游 ghcr.io/flaresolverr/flaresolverr 有完整三段 SemVer tag（v3.x），排除 latest 等别名
+  - id: flaresolverr
+    target: service
+    service: flaresolverr
+    source: ghcr.io/flaresolverr/flaresolverr
+    channel: stable
+    sort: semver
+    tag_regex: '^v?\d+\.\d+\.\d+$'
+    delivery:
+      mode: mirror
+
+stores:
+  official:
+    # Official store publication is intentionally disabled; publish only to Miaomiao Store.
+    enabled: false
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: FlareSolverr
+    summary: "FlareSolverr - 用于绕过 Cloudflare 和 DDoS-GUARD 保护的代理服务器"
