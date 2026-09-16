@@ -1,5 +1,5 @@
 package: cloud.lazycat.app.flaresolverr
-version: 1.0.0
+version: 3.5.2
 name: FlareSolverr
 description: "FlareSolverr - A proxy server to bypass Cloudflare and DDoS-GUARD protection"
 min_os_version: "1.5.0"
